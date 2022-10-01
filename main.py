@@ -1,6 +1,8 @@
 """
-Practice on LSA: (SVD)
+Practice on LSA:
 https://blog.csdn.net/zhzhji440/article/details/47193731?spm=1001.2014.3001.5501
+SVD:
+https://ccjou.wordpress.com/2009/09/01/%E5%A5%87%E7%95%B0%E5%80%BC%E5%88%86%E8%A7%A3-svd/
 """
 
 from cmath import isnan
@@ -87,12 +89,12 @@ class LSA(object):
         self.U, self.S, self.Vt = svd(self.count_matrix)
         if TFIDF == True:
             self.U, self.S, self.Vt = svd(self.TFIDF_matrix)
+        self.V = np.array(self.Vt).transpose() # Remember transpose (SVD)
 
         # 取前三維（沒特別意義，方便視覺化而已）
-        # print(self.Vt) # WHy (10,)?
-        print(self.U[:, :3]) # 單字在語意空間中的座標
-        print(self.S[:3]) # 奇異值
-        print(self.Vt[:, :3]) # 文章在語意空間中的座標
+        # print(self.U[:, :3]) # 單字在語意空間中的座標
+        # print(self.S[:3]) # 奇異值
+        # print(self.V[:, :3]) # 文章在語意空間中的座標
         
         if dim != None:
             self.U = self.U[:, :dim]
@@ -106,14 +108,11 @@ class LSA(object):
         x, y = self.U[:, 1], self.U[:, 2]
         plt.plot(x, y, 'r*')
         for idx, xy in enumerate(zip(x, y)):
-            # print(self.keys)
-            # plt.annotate('(%.2f, %.2f)' % xy, xy=xy)
             plt.annotate(self.keys[idx], xy=xy)
         
-        x, y = self.Vt[:, 1], self.Vt[:, 2]
+        x, y = self.V[:, 1], self.V[:, 2]
         plt.plot(x, y, 'b*')
         for idx, xy in enumerate(zip(x, y)):
-            # plt.annotate("({:.2f}, {:.2f})".format(xy[0], xy[1]), xy=xy)
             plt.annotate("T{}".format(idx+1), xy=xy)
 
         plt.axis([-1,1,-1,1])
@@ -129,9 +128,9 @@ lsa.build()
 # lsa.print_count_matrix()
 
 lsa.TFIDF()
-# lsa.print_TFIDF_matrix()
+lsa.print_TFIDF_matrix()
 
-lsa.do_svd(dim=3, TFIDF=False)
+lsa.do_svd(dim=3, TFIDF=True)
 
 # Draw figure
 lsa.draw_fig() # T10 在 (0,0)
